@@ -94,7 +94,46 @@ npm test
 
 Covers: 70/10/20 split, Stripe fee 50/50, residual cent, transfer_eligible_at, idempotency, RLS data model.
 
-## Vercel Deploy
+## Netlify Deploy (Recommended)
+
+### Option A — Netlify CLI
+
+```bash
+npm install -g netlify-cli
+netlify login
+netlify init        # link to new or existing site
+netlify deploy --prod
+```
+
+### Option B — Git-connected deploy
+
+1. Push the repo to GitHub/GitLab/Bitbucket
+2. Go to [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import from Git**
+3. Build settings are auto-detected from `netlify.toml`:
+   - **Build command:** `npm run build`
+   - **Plugin:** `@netlify/plugin-nextjs` (handles Next.js 15 App Router)
+   - **Node:** 20 (from `.nvmrc`)
+
+### Required environment variables (Netlify UI → Site settings → Environment variables)
+
+| Variable | Value |
+|----------|-------|
+| `ATTRIBUTION_SECRET` | Random 32+ character string |
+| `DEMO_MODE` | `true` |
+| `DEMO_FAST_ESCROW` | `true` |
+| `CRON_SECRET` | Optional — protects `/api/ledger/process` |
+
+### Scheduled settlement
+
+Hourly settlement runs via `netlify/functions/scheduled-settlement.mts` (configured in the function's `schedule` export).
+
+For live demos, use **SuperAdmin → Run Settlement Engine** or **Demo Control → Advance Clock +48h** — these work immediately without waiting for cron.
+
+### Serverless note
+
+The demo uses an in-memory store (`lib/tsb/store.ts`). On Netlify serverless, state resets on cold starts. For a single demo session (scan QR → checkout → dashboards), everything works. For persistent data across deploys, connect Supabase (see `.env.example`).
+
+## Vercel Deploy (alternative)
 
 ```bash
 npx vercel --prod

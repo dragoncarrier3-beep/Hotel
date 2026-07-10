@@ -1,25 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { processEligibleTransfers, calculateSplit } from "@/lib/ledger";
+import { processSettlement, calculateSplit } from "@/lib/tsb/ledger";
+import { getStore } from "@/lib/tsb/store";
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
   const forceDemo = req.nextUrl.searchParams.get("force") === "true";
 
-  if (
-    cronSecret &&
-    authHeader !== `Bearer ${cronSecret}` &&
-    !forceDemo
-  ) {
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}` && !forceDemo) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   if (forceDemo) {
-    const { makeOrdersEligibleForDemo } = await import("@/lib/supabase");
-    await makeOrdersEligibleForDemo();
+    const now = new Date().toISOString();
+    const store = getStore();
+    for (const o of store.orders) {
+      if (o.transferStatus === "scheduled" && o.paymentStatus === "captured") {
+        o.transferEligibleAt = now;
+        o.transferStatus = "eligible";
+      }
+    }
   }
 
-  const result = await processEligibleTransfers();
+  const result = await processSettlement("cron");
   return NextResponse.json(result);
 }
 
