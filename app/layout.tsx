@@ -1,0 +1,21 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "TSB — The Secret Boutique | POC Demo",
+  description:
+    "B2B2C Walled-Garden Marketplace POC — RLS, Saga, Escrow, Attribution",
+  robots: { index: false, follow: false },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className="antialiased font-sans">{children}</body>
+    </html>
+  );
+}

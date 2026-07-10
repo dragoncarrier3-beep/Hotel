@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tsb-navy: #0f172a;
+  --tsb-gold: #c9a227;
+  --tsb-cream: #faf8f5;
+}
+
+body {
+  background: var(--tsb-cream);
+  color: var(--tsb-navy);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
