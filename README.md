@@ -111,8 +111,11 @@ netlify deploy --prod
 2. Go to [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import from Git**
 3. Build settings are auto-detected from `netlify.toml`:
    - **Build command:** `npm run build`
-   - **Plugin:** `@netlify/plugin-nextjs` (handles Next.js 15 App Router)
-   - **Node:** 20 (from `.nvmrc`)
+   - **Publish directory:** `.next` (do NOT set to repo root in Netlify UI)
+   - **Plugin:** `@netlify/plugin-nextjs`
+   - **Node:** 20
+
+> If deploy fails with *"publish directory cannot be the same as base directory"*, go to **Site configuration → Build & deploy → Build settings** and clear the Publish directory field (leave empty) so `netlify.toml` takes over.
 
 ### Required environment variables (Netlify UI → Site settings → Environment variables)
 

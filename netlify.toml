@@ -1,5 +1,7 @@
 [build]
   command = "npm run build"
+  # Overrides Netlify UI if publish is set to repo root (required for @netlify/plugin-nextjs)
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
